@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"
 
-	"github.com/alessandro54/stats/internal/adapters/blizzard"
+	"github.com/alessandro54/stats/internal/dataaccess/adapters/warcraftlogs"
 )
 
 func Start() {
@@ -23,14 +23,14 @@ func Start() {
 		return c.SendString("OK")
 	})
 
-	provider := blizzard.NewBlizzardTokenProvider()
+	provider := warcraftlogs.NewWCLTokenProvider()
 
 	app.Get("/token", func(c fiber.Ctx) error {
-		token, err := provider.GetToken()
+		blizzardToken, err := provider.GetToken()
 		if err != nil {
 			return c.Status(500).SendString("Failed to get token: " + err.Error())
 		}
-		return c.JSON(fiber.Map{"access_token": token})
+		return c.JSON(fiber.Map{"access_token": blizzardToken})
 	})
 
 	// Get PORT from env or default to 3000
