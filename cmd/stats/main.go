@@ -1,8 +1,10 @@
 package main
 
 import (
-	"encoding/json"
-	"github.com/alessandro54/stats/internal/gameinfo/adapter/blizzard"
+	"github.com/alessandro54/stats/infra/db"
+	"github.com/alessandro54/stats/internal/gameinfo/handler"
+	"github.com/alessandro54/stats/internal/gameinfo/persistence/repositories"
+	"github.com/alessandro54/stats/internal/gameinfo/service"
 	"github.com/alessandro54/stats/internal/shared"
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"
@@ -11,42 +13,54 @@ import (
 )
 
 func main() {
+	app := fiber.New()
+
+	api := app.Group("/api/v1")
+
 	err := godotenv.Load()
+
+	db.Connect()
+	db.RunMigrations(db.DB)
 
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
-	app := fiber.New()
 
-	app.Get("/debug/equipment/:realm/:char", func(c fiber.Ctx) error {
-		blizz := blizzard.GetClient()
+	repo := repositories.NewLeaderboardSnapshotRepository()
+	svc := service.NewSnapshotService(repo)
+	snapshotHandler := handler.NewLeaderboardSnapshotHandler(svc)
 
-		data, err := blizz.FetchCharacterEquipment(c.Context(), "illidan", "nystinn")
+	api.Get("/snapshots", snapshotHandler.GetAllSnapshots)
 
-		if err != nil {
-			return c.Status(500).SendString(err.Error())
-		}
-		var result any
-		if err := json.Unmarshal(data, &result); err != nil {
-			return c.Status(500).SendString("failed to parse Blizzard JSON: " + err.Error())
-		}
-		return c.JSON(fiber.Map{"equipment": result})
-	})
-
-	app.Get("/debug/leaderboard/:pvpSeasonId/:pvpBracket", func(c fiber.Ctx) error {
-		blizz := blizzard.GetClient()
-
-		data, err := blizz.FetchPvpLeaderboard(c.Context(), c.Params("pvpSeasonId"), c.Params("pvpBracket"))
-
-		if err != nil {
-			return c.Status(500).SendString(err.Error())
-		}
-		var result any
-		if err := json.Unmarshal(data, &result); err != nil {
-			return c.Status(500).SendString("failed to parse Blizzard JSON: " + err.Error())
-		}
-		return c.JSON(fiber.Map{"equipment": result})
-	})
+	//app.Get("/debug/equipment/:realm/:char", func(c fiber.Ctx) error {
+	//	blizz := blizzard.GetClient()
+	//
+	//	data, err := blizz.FetchCharacterEquipment(c.Context(), "illidan", "nystinn")
+	//
+	//	if err != nil {
+	//		return c.Status(500).SendString(err.Error())
+	//	}
+	//	var result any
+	//	if err := json.Unmarshal(data, &result); err != nil {
+	//		return c.Status(500).SendString("failed to parse Blizzard JSON: " + err.Error())
+	//	}
+	//	return c.JSON(fiber.Map{"equipment": result})
+	//})
+	//
+	//app.Get("/debug/leaderboard/:pvpSeasonId/:pvpBracket", func(c fiber.Ctx) error {
+	//	blizz := blizzard.GetClient()
+	//
+	//	data, err := blizz.FetchPvpLeaderboard(c.Context(), c.Params("pvpSeasonId"), c.Params("pvpBracket"))
+	//
+	//	if err != nil {
+	//		return c.Status(500).SendString(err.Error())
+	//	}
+	//	var result any
+	//	if err := json.Unmarshal(data, &result); err != nil {
+	//		return c.Status(500).SendString("failed to parse Blizzard JSON: " + err.Error())
+	//	}
+	//	return c.JSON(fiber.Map{"equipment": result})
+	//})
 
 	// You would typically pass blizzardClient into your app layer here
 
