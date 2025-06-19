@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/alessandro54/stats/cmd/cron"
 	"github.com/alessandro54/stats/infra/db"
 	"github.com/alessandro54/stats/internal/gameinfo/handler"
 	"github.com/alessandro54/stats/internal/gameinfo/persistence/repositories"
@@ -29,6 +30,7 @@ func main() {
 	repo := repositories.NewLeaderboardSnapshotRepository()
 	svc := service.NewSnapshotService(repo)
 	snapshotHandler := handler.NewLeaderboardSnapshotHandler(svc)
+	cron.StartCronJobs(svc)
 
 	api.Get("/snapshots", snapshotHandler.GetAllSnapshots)
 
@@ -46,7 +48,7 @@ func main() {
 	//	}
 	//	return c.JSON(fiber.Map{"equipment": result})
 	//})
-	//
+	
 	//app.Get("/debug/leaderboard/:pvpSeasonId/:pvpBracket", func(c fiber.Ctx) error {
 	//	blizz := blizzard.GetClient()
 	//
