@@ -13,9 +13,9 @@ func StartCronJobs() {
 
 	currentSeasonId := "39"
 
-	_, err = jobs.CreatePvpSnapshot(s, currentSeasonId, "2v2")
+	_, err = jobs.CreatePvpSnapshot(s, currentSeasonId, "2v2", "us")
 
-	_, err = jobs.CreatePvpSnapshot(s, currentSeasonId, "3v3")
+	_, err = jobs.CreatePvpSnapshot(s, currentSeasonId, "3v3", "us")
 
 	if err != nil {
 		panic(err)

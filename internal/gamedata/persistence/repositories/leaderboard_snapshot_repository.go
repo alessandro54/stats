@@ -3,7 +3,7 @@ package repositories
 import (
 	"context"
 	client "github.com/alessandro54/stats/infra/db"
-	"github.com/alessandro54/stats/internal/gameinfo/domain/entity"
+	"github.com/alessandro54/stats/internal/gamedata/domain/entity"
 	"gorm.io/gorm"
 )
 

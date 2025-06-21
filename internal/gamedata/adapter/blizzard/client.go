@@ -14,28 +14,51 @@ type Client struct {
 	BaseURL    string
 	Token      string
 	HTTPClient *http.Client
+	Locale     string
+}
+
+type clientKey struct {
+	region string
+	locale string
 }
 
 var (
-	clientInstance *Client
-	once           sync.Once
+	clientCache = make(map[clientKey]*Client)
+	mu          sync.Mutex
 )
 
-func GetClient() *Client {
-	once.Do(func() {
-		token, err := NewTokenProvider().GetToken(context.Background())
-		if err != nil {
-			panic(fmt.Sprintf("failed to get Blizzard token: %v", err))
-		}
+func GetClient(ctx context.Context, region string, locale string) (*Client, error) {
+	if region == "" {
+		region = "us"
+	}
+	if locale == "" {
+		locale = "en_US"
+	}
 
-		clientInstance = &Client{
-			Region:     "us",
-			BaseURL:    fmt.Sprintf("https://%s.api.blizzard.com", "us"),
-			Token:      token,
-			HTTPClient: &http.Client{},
-		}
-	})
-	return clientInstance
+	key := clientKey{region, locale}
+
+	mu.Lock()
+	defer mu.Unlock()
+
+	if client, ok := clientCache[key]; ok {
+		return client, nil
+	}
+
+	token, err := NewTokenProvider().GetToken(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get Blizzard token: %w", err)
+	}
+
+	client := &Client{
+		Region:     region,
+		BaseURL:    fmt.Sprintf("https://%s.api.blizzard.com", region),
+		Token:      token,
+		HTTPClient: &http.Client{},
+		Locale:     locale,
+	}
+
+	clientCache[key] = client
+	return client, nil
 }
 
 func (c *Client) Get(ctx context.Context, path string, queryParams map[string]string) ([]byte, error) {

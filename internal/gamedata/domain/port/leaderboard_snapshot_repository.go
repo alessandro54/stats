@@ -2,7 +2,7 @@ package port
 
 import (
 	"context"
-	"github.com/alessandro54/stats/internal/gameinfo/domain/entity"
+	"github.com/alessandro54/stats/internal/gamedata/domain/entity"
 )
 
 type LeaderboardSnapshotRepository interface {

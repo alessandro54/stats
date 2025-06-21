@@ -3,9 +3,9 @@ package main
 import (
 	"github.com/alessandro54/stats/cmd/cron"
 	"github.com/alessandro54/stats/infra/db"
-	"github.com/alessandro54/stats/internal/gameinfo/handler"
-	"github.com/alessandro54/stats/internal/gameinfo/persistence/repositories"
-	"github.com/alessandro54/stats/internal/gameinfo/services"
+	"github.com/alessandro54/stats/internal/gamedata/handler"
+	"github.com/alessandro54/stats/internal/gamedata/persistence/repositories"
+	"github.com/alessandro54/stats/internal/gamedata/services"
 	"github.com/alessandro54/stats/internal/shared"
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"

@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/alessandro54/stats/internal/gameinfo/domain/entity"
+	"github.com/alessandro54/stats/internal/gamedata/domain/entity"
 	"github.com/go-gormigrate/gormigrate/v2"
 	"gorm.io/gorm"
 )

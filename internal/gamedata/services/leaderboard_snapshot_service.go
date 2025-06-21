@@ -3,9 +3,9 @@ package services
 import (
 	"context"
 	"encoding/json"
-	pvp_season "github.com/alessandro54/stats/internal/gameinfo/adapter/blizzard/gamedata"
-	"github.com/alessandro54/stats/internal/gameinfo/domain/entity"
-	"github.com/alessandro54/stats/internal/gameinfo/domain/port"
+	pvp_season "github.com/alessandro54/stats/internal/gamedata/adapter/blizzard/gamedata"
+	"github.com/alessandro54/stats/internal/gamedata/domain/entity"
+	"github.com/alessandro54/stats/internal/gamedata/domain/port"
 	"time"
 )
 
@@ -33,8 +33,11 @@ func (s *snapshotService) Save(ctx context.Context, mode string, bracket string,
 	return s.repo.SaveSnapshot(ctx, snapshot)
 }
 
-func (s *snapshotService) FetchFromBlizzardAndSave(ctx context.Context, pvpSeasonId string, pvpBracket string) error {
-	data, err := pvp_season.FetchLeaderboard(ctx, pvpSeasonId, pvpBracket)
+func (s *snapshotService) FetchFromBlizzardAndSave(ctx context.Context, pvpSeasonId string, pvpBracket string, region string) error {
+	data, err := pvp_season.FetchLeaderboard(ctx, pvpSeasonId, pvpBracket, map[string]string{
+		"region": region,
+		"locale": "en_US",
+	})
 
 	if err != nil {
 		return err
@@ -51,6 +54,7 @@ func (s *snapshotService) FetchFromBlizzardAndSave(ctx context.Context, pvpSeaso
 		Mode:      "pvp",
 		Bracket:   pvpBracket,
 		Data:      data,
+		Region:    region,
 		CreatedAt: time.Now(),
 	}
 
