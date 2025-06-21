@@ -1,9 +1,9 @@
-package service
+package services
 
 import (
 	"context"
 	"encoding/json"
-	"github.com/alessandro54/stats/internal/gameinfo/adapter/blizzard"
+	pvp_season "github.com/alessandro54/stats/internal/gameinfo/adapter/blizzard/gamedata"
 	"github.com/alessandro54/stats/internal/gameinfo/domain/entity"
 	"github.com/alessandro54/stats/internal/gameinfo/domain/port"
 	"time"
@@ -34,9 +34,7 @@ func (s *snapshotService) Save(ctx context.Context, mode string, bracket string,
 }
 
 func (s *snapshotService) FetchFromBlizzardAndSave(ctx context.Context, pvpSeasonId string, pvpBracket string) error {
-	blizz := blizzard.GetClient()
-
-	data, err := blizz.FetchPvpLeaderboard(ctx, pvpSeasonId, pvpBracket)
+	data, err := pvp_season.FetchLeaderboard(ctx, pvpSeasonId, pvpBracket)
 
 	if err != nil {
 		return err

@@ -5,7 +5,7 @@ import (
 	"github.com/alessandro54/stats/infra/db"
 	"github.com/alessandro54/stats/internal/gameinfo/handler"
 	"github.com/alessandro54/stats/internal/gameinfo/persistence/repositories"
-	"github.com/alessandro54/stats/internal/gameinfo/service"
+	"github.com/alessandro54/stats/internal/gameinfo/services"
 	"github.com/alessandro54/stats/internal/shared"
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"
@@ -28,43 +28,11 @@ func main() {
 	}
 
 	repo := repositories.NewLeaderboardSnapshotRepository()
-	svc := service.NewSnapshotService(repo)
+	svc := services.NewSnapshotService(repo)
 	snapshotHandler := handler.NewLeaderboardSnapshotHandler(svc)
-	cron.StartCronJobs(svc)
+	cron.StartCronJobs()
 
 	api.Get("/snapshots", snapshotHandler.GetAllSnapshots)
-
-	//app.Get("/debug/equipment/:realm/:char", func(c fiber.Ctx) error {
-	//	blizz := blizzard.GetClient()
-	//
-	//	data, err := blizz.FetchCharacterEquipment(c.Context(), "illidan", "nystinn")
-	//
-	//	if err != nil {
-	//		return c.Status(500).SendString(err.Error())
-	//	}
-	//	var result any
-	//	if err := json.Unmarshal(data, &result); err != nil {
-	//		return c.Status(500).SendString("failed to parse Blizzard JSON: " + err.Error())
-	//	}
-	//	return c.JSON(fiber.Map{"equipment": result})
-	//})
-	
-	//app.Get("/debug/leaderboard/:pvpSeasonId/:pvpBracket", func(c fiber.Ctx) error {
-	//	blizz := blizzard.GetClient()
-	//
-	//	data, err := blizz.FetchPvpLeaderboard(c.Context(), c.Params("pvpSeasonId"), c.Params("pvpBracket"))
-	//
-	//	if err != nil {
-	//		return c.Status(500).SendString(err.Error())
-	//	}
-	//	var result any
-	//	if err := json.Unmarshal(data, &result); err != nil {
-	//		return c.Status(500).SendString("failed to parse Blizzard JSON: " + err.Error())
-	//	}
-	//	return c.JSON(fiber.Map{"equipment": result})
-	//})
-
-	// You would typically pass blizzardClient into your app layer here
 
 	err = shared.StartFiberServer(shared.ServerConfig{
 		Port:         8080,

@@ -1,35 +1,22 @@
 package cron
 
 import (
-	"context"
-	"fmt"
-	"github.com/alessandro54/stats/internal/gameinfo/domain/port"
+	"github.com/alessandro54/stats/cmd/cron/jobs"
 	"github.com/go-co-op/gocron/v2"
 )
 
-func StartCronJobs(leaderboardSnapshot port.LeaderboardSnapshotService) {
+func StartCronJobs() {
 	s, err := gocron.NewScheduler()
 	if err != nil {
 		panic(err)
 	}
 
-	j, err := s.NewJob(
-		gocron.DailyJob(
-			1,
-			gocron.NewAtTimes(gocron.NewAtTime(12, 0, 0)),
-		),
-		gocron.NewTask(
-			func() {
-				ctx := context.Background()
-				err := leaderboardSnapshot.FetchFromBlizzardAndSave(ctx, "33", "3v3")
-				if err != nil {
-					fmt.Println("Error fetching snapshots:", err)
-					return
-				}
-			},
-		),
-	)
-	fmt.Println(j.ID())
+	currentSeasonId := "39"
+
+	_, err = jobs.CreatePvpSnapshot(s, currentSeasonId, "2v2")
+
+	_, err = jobs.CreatePvpSnapshot(s, currentSeasonId, "3v3")
+
 	if err != nil {
 		panic(err)
 	}
