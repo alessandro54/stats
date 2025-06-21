@@ -1,9 +1,9 @@
-package services
+package service
 
 import (
 	"context"
 	"encoding/json"
-	pvp_season "github.com/alessandro54/stats/internal/gamedata/adapter/blizzard/gamedata"
+	"github.com/alessandro54/stats/internal/gamedata/adapter/blizzard/gamedata"
 	"github.com/alessandro54/stats/internal/gamedata/domain/entity"
 	"github.com/alessandro54/stats/internal/gamedata/domain/port"
 	"time"
@@ -34,7 +34,7 @@ func (s *snapshotService) Save(ctx context.Context, mode string, bracket string,
 }
 
 func (s *snapshotService) FetchFromBlizzardAndSave(ctx context.Context, pvpSeasonId string, pvpBracket string, region string) error {
-	data, err := pvp_season.FetchLeaderboard(ctx, pvpSeasonId, pvpBracket, map[string]string{
+	data, err := pvpseason.FetchLeaderboard(ctx, pvpSeasonId, pvpBracket, map[string]string{
 		"region": region,
 		"locale": "en_US",
 	})
@@ -47,8 +47,6 @@ func (s *snapshotService) FetchFromBlizzardAndSave(ctx context.Context, pvpSeaso
 	if err := json.Unmarshal(data, &result); err != nil {
 		panic("failed to parse Blizzard JSON: " + err.Error())
 	}
-
-	print(result)
 
 	snapshot := &entity.LeaderboardSnapshot{
 		Mode:      "pvp",

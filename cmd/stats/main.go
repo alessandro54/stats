@@ -3,9 +3,8 @@ package main
 import (
 	"github.com/alessandro54/stats/cmd/cron"
 	"github.com/alessandro54/stats/infra/db"
-	"github.com/alessandro54/stats/internal/gamedata/handler"
-	"github.com/alessandro54/stats/internal/gamedata/persistence/repositories"
-	"github.com/alessandro54/stats/internal/gamedata/services"
+	"github.com/alessandro54/stats/internal/system/handler"
+
 	"github.com/alessandro54/stats/internal/shared"
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"
@@ -14,25 +13,21 @@ import (
 )
 
 func main() {
-	app := fiber.New()
-
-	api := app.Group("/api/v1")
-
 	err := godotenv.Load()
-
-	db.Connect()
-	db.RunMigrations(db.DB)
-
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	repo := repositories.NewLeaderboardSnapshotRepository()
-	svc := services.NewSnapshotService(repo)
-	snapshotHandler := handler.NewLeaderboardSnapshotHandler(svc)
-	cron.StartCronJobs()
+	app := fiber.New()
 
-	api.Get("/snapshots", snapshotHandler.GetAllSnapshots)
+	api := app.Group("/api/v1")
+
+	handler.RegisterRoutes(api)
+
+	db.Connect()
+	db.RunMigrations(db.DB)
+
+	cron.StartCronJobs()
 
 	err = shared.StartFiberServer(shared.ServerConfig{
 		Port:         8080,

@@ -4,13 +4,13 @@ import (
 	"context"
 	"fmt"
 	"github.com/alessandro54/stats/internal/gamedata/persistence/repositories"
-	"github.com/alessandro54/stats/internal/gamedata/services"
+	"github.com/alessandro54/stats/internal/gamedata/service"
 	"github.com/go-co-op/gocron/v2"
 )
 
 func CreatePvpSnapshot(scheduler gocron.Scheduler, pvpSeasonId string, pvpBracket string, region string) (gocron.Job, error) {
 	repo := repositories.NewLeaderboardSnapshotRepository()
-	service := services.NewSnapshotService(repo)
+	service := service.NewSnapshotService(repo)
 
 	job, err := scheduler.NewJob(
 		gocron.DailyJob(
