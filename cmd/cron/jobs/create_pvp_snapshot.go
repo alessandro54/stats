@@ -3,9 +3,9 @@ package jobs
 import (
 	"context"
 	"fmt"
-	"github.com/alessandro54/stats/infra/db"
 	"github.com/alessandro54/stats/internal/gamedata/persistence/repositories"
 	"github.com/alessandro54/stats/internal/gamedata/service"
+	"github.com/alessandro54/stats/internal/infra/db"
 	"github.com/go-co-op/gocron/v2"
 )
 

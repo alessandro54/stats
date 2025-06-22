@@ -5,14 +5,14 @@ import (
 	"encoding/json"
 	"fmt"
 	pvpseason "github.com/alessandro54/stats/internal/gamedata/adapter/blizzard/gamedata"
-	"github.com/alessandro54/stats/internal/gamedata/domain/port"
+	port2 "github.com/alessandro54/stats/internal/gamedata/port"
 )
 
 type pvpSeasonService struct {
-	snapshotService port.SnapshotService
+	snapshotService port2.SnapshotService
 }
 
-func NewPvpService(snapshotService port.SnapshotService) port.PvpSeasonService {
+func NewPvpService(snapshotService port2.SnapshotService) port2.PvpSeasonService {
 	return &pvpSeasonService{
 		snapshotService: snapshotService,
 	}

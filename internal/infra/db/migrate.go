@@ -1,7 +1,7 @@
 package db
 
 import (
-	"github.com/alessandro54/stats/infra/db/migrations"
+	"github.com/alessandro54/stats/internal/infra/db/migrations"
 	"github.com/go-gormigrate/gormigrate/v2"
 	"gorm.io/gorm"
 	"log"

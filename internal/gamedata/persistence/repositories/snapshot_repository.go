@@ -3,8 +3,8 @@ package repositories
 import (
 	"context"
 	"errors"
-	"github.com/alessandro54/stats/internal/gamedata/domain/entity"
-	"github.com/alessandro54/stats/internal/gamedata/domain/port"
+	"github.com/alessandro54/stats/internal/gamedata/model"
+	"github.com/alessandro54/stats/internal/gamedata/port"
 	"gorm.io/gorm"
 )
 
@@ -16,12 +16,12 @@ func NewSnapshotRepository(db *gorm.DB) port.SnapshotRepository {
 	return &snapshotRepositoryImpl{db: db}
 }
 
-func (r *snapshotRepositoryImpl) SaveSnapshot(ctx context.Context, snapshot *entity.LeaderboardSnapshot) error {
+func (r *snapshotRepositoryImpl) SaveSnapshot(ctx context.Context, snapshot *model.LeaderboardSnapshot) error {
 	return r.db.WithContext(ctx).Create(snapshot).Error
 }
 
-func (r *snapshotRepositoryImpl) GetAllSnapshots(ctx context.Context) ([]*entity.LeaderboardSnapshot, error) {
-	var snapshots []*entity.LeaderboardSnapshot
+func (r *snapshotRepositoryImpl) GetAllSnapshots(ctx context.Context) ([]*model.LeaderboardSnapshot, error) {
+	var snapshots []*model.LeaderboardSnapshot
 	err := r.db.WithContext(ctx).Order("created_at DESC").Find(&snapshots).Error
 	if err != nil {
 		return nil, err
@@ -29,8 +29,8 @@ func (r *snapshotRepositoryImpl) GetAllSnapshots(ctx context.Context) ([]*entity
 	return snapshots, nil
 }
 
-func (r *snapshotRepositoryImpl) GetLatestSnapshot(ctx context.Context, mode string, bracket string) (*entity.LeaderboardSnapshot, error) {
-	var snapshot entity.LeaderboardSnapshot
+func (r *snapshotRepositoryImpl) GetLatestSnapshot(ctx context.Context, mode string, bracket string) (*model.LeaderboardSnapshot, error) {
+	var snapshot model.LeaderboardSnapshot
 	err := r.db.WithContext(ctx).
 		Where("mode = ?", mode).
 		Where("bracket = ?", bracket).
