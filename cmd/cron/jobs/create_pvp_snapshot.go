@@ -10,7 +10,7 @@ import (
 
 func CreatePvpSnapshot(scheduler gocron.Scheduler, pvpSeasonId string, pvpBracket string, region string) (gocron.Job, error) {
 	repo := repositories.NewLeaderboardSnapshotRepository()
-	service := service.NewSnapshotService(repo)
+	svc := service.NewSnapshotService(repo)
 
 	job, err := scheduler.NewJob(
 		gocron.DailyJob(
@@ -20,7 +20,7 @@ func CreatePvpSnapshot(scheduler gocron.Scheduler, pvpSeasonId string, pvpBracke
 		gocron.NewTask(
 			func() {
 				ctx := context.Background()
-				err := service.FetchFromBlizzardAndSave(ctx, pvpSeasonId, pvpBracket, region)
+				err := svc.FetchFromBlizzardAndSave(ctx, pvpSeasonId, pvpBracket, region)
 				if err != nil {
 					fmt.Println("Error fetching snapshots:", err)
 					return

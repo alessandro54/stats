@@ -5,17 +5,17 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-type LeaderboardSnapshotHandler struct {
-	service port.LeaderboardSnapshotService
+type SnapshotHandler struct {
+	service port.SnapshotService
 }
 
-func NewLeaderboardSnapshotHandler(service port.LeaderboardSnapshotService) *LeaderboardSnapshotHandler {
-	return &LeaderboardSnapshotHandler{
+func NewLeaderboardSnapshotHandler(service port.SnapshotService) *SnapshotHandler {
+	return &SnapshotHandler{
 		service: service,
 	}
 }
 
-func (h *LeaderboardSnapshotHandler) GetAllSnapshots(c fiber.Ctx) error {
+func (h *SnapshotHandler) GetAllSnapshots(c fiber.Ctx) error {
 	snapshots, err := h.service.GetAll(c.Context())
 
 	if err != nil {

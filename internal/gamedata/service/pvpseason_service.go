@@ -5,9 +5,32 @@ import (
 	"encoding/json"
 	"fmt"
 	pvpseason "github.com/alessandro54/stats/internal/gamedata/adapter/blizzard/gamedata"
+	"github.com/alessandro54/stats/internal/gamedata/domain/port"
 )
 
-func GetCurrentSeasonID(ctx context.Context) (int, error) {
+type pvpSeasonService struct {
+	snapshotService port.SnapshotService
+}
+
+func NewPvpService(snapshotService port.SnapshotService) port.PvpSeasonService {
+	return &pvpSeasonService{
+		snapshotService: snapshotService,
+	}
+}
+
+func (p pvpSeasonService) GetLatestPvpLeaderboard(ctx context.Context, bracket string) ([]byte, error) {
+	data, err := p.snapshotService.GetLatestSeasonByBracket(ctx, "pvp", bracket)
+	if err != nil {
+		return nil, fmt.Errorf("failed to fetch leaderboard: %w", err)
+	}
+	if data == nil {
+		return nil, fmt.Errorf("no leaderboard data found for bracket: %s", bracket)
+	}
+
+	return data.Data, nil
+}
+
+func (p pvpSeasonService) GetCurrentSeasonID(ctx context.Context) (int, error) {
 	data, err := pvpseason.FetchPvpSeasonIndex(ctx, map[string]string{})
 	if err != nil {
 		return 0, err

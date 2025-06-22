@@ -9,21 +9,35 @@ import (
 	"time"
 )
 
-type snapshotService struct {
-	repo port.LeaderboardSnapshotRepository
+type snapshotServiceImpl struct {
+	repo port.SnapshotRepository
 }
 
-func NewSnapshotService(repo port.LeaderboardSnapshotRepository) port.LeaderboardSnapshotService {
-	return &snapshotService{
+func NewSnapshotService(repo port.SnapshotRepository) port.SnapshotService {
+	return &snapshotServiceImpl{
 		repo: repo,
 	}
 }
 
-func (s *snapshotService) GetAll(ctx context.Context) ([]*entity.LeaderboardSnapshot, error) {
+func (s *snapshotServiceImpl) GetAll(ctx context.Context) ([]*entity.LeaderboardSnapshot, error) {
 	return s.repo.GetAllSnapshots(ctx)
 }
 
-func (s *snapshotService) Save(ctx context.Context, mode string, bracket string, data []byte) error {
+func (s *snapshotServiceImpl) GetLatestSeasonByBracket(ctx context.Context, mode string, bracket string) (*entity.LeaderboardSnapshot, error) {
+	snapshot, err := s.repo.GetLatestSnapshot(ctx, mode, bracket)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if snapshot == nil {
+		return nil, nil // No snapshot found
+	}
+
+	return snapshot, nil
+}
+
+func (s *snapshotServiceImpl) Save(ctx context.Context, mode string, bracket string, data []byte) error {
 	snapshot := &entity.LeaderboardSnapshot{
 		Mode:      mode,
 		Bracket:   bracket,
@@ -33,7 +47,7 @@ func (s *snapshotService) Save(ctx context.Context, mode string, bracket string,
 	return s.repo.SaveSnapshot(ctx, snapshot)
 }
 
-func (s *snapshotService) FetchFromBlizzardAndSave(ctx context.Context, pvpSeasonId string, pvpBracket string, region string) error {
+func (s *snapshotServiceImpl) FetchFromBlizzardAndSave(ctx context.Context, pvpSeasonId string, pvpBracket string, region string) error {
 	data, err := pvpseason.FetchLeaderboard(ctx, pvpSeasonId, pvpBracket, map[string]string{
 		"region": region,
 		"locale": "en_US",

@@ -1,18 +1,41 @@
 package handler
 
 import (
-	"github.com/alessandro54/stats/internal/gamedata/service"
+	"github.com/alessandro54/stats/internal/gamedata/domain/port"
 	"github.com/gofiber/fiber/v3"
 )
 
-func GetPvpLeaderboard(c fiber.Ctx) error {
+type PvpSeasonHandler struct {
+	svc port.PvpSeasonService
+}
+
+func NewPvpSeasonHandler(s port.PvpSeasonService) *PvpSeasonHandler {
+	return &PvpSeasonHandler{
+		svc: s,
+	}
+}
+
+func (h *PvpSeasonHandler) GetPvpLeaderboard(c fiber.Ctx) error {
+	bracket := c.Params("bracket")
+	snapshot, err := h.svc.GetLatestPvpLeaderboard(c.Context(), bracket)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to fetch leaderboard",
+		})
+	}
+	if snapshot == nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "No leaderboard data found for the specified bracket",
+		})
+	}
+
 	return c.JSON(fiber.Map{
-		"message": "This endpoint is not implemented yet",
+		"leaderboard": snapshot,
 	})
 }
 
-func GetPvpSeasonID(c fiber.Ctx) error {
-	id, err := service.GetCurrentSeasonID(c.Context())
+func (h *PvpSeasonHandler) GetPvpSeasonID(c fiber.Ctx) error {
+	id, err := h.svc.GetCurrentSeasonID(c.Context())
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to fetch current season ID",
