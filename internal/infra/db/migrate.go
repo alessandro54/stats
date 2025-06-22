@@ -7,15 +7,23 @@ import (
 	"log"
 )
 
-func RunMigrations(db *gorm.DB) {
-	m := gormigrate.New(db, gormigrate.DefaultOptions, []*gormigrate.Migration{
+func migrationsList() []*gormigrate.Migration {
+	return []*gormigrate.Migration{
 		migrations.CreateLeaderboardSnapshotsMigration(),
-		// Add future migrations here in order
-	})
-
-	if err := m.Migrate(); err != nil {
-		log.Fatalf("❌ Could not run migrations: %v", err)
+		migrations.CreatePVPSeasonsMigration(),
+		migrations.CreatePVPLeaderboardsMigration(),
+		// Add more migrations here
 	}
+}
 
+func NewMigrator(db *gorm.DB) *gormigrate.Gormigrate {
+	return gormigrate.New(db, gormigrate.DefaultOptions, migrationsList())
+}
+
+func RunMigrations(db *gorm.DB) {
+	m := NewMigrator(db)
+	if err := m.Migrate(); err != nil {
+		log.Fatalf("❌ Migration failed: %v", err)
+	}
 	log.Println("✅ Database migrated successfully")
 }

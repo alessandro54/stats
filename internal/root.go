@@ -26,8 +26,10 @@ func SetupApp() *fiber.App {
 		log.Fatal("Error loading .env file")
 	}
 
-	db.Connect()
-	db.RunMigrations(db.ProvideDB())
+	_, err = db.Connect()
+	if err != nil {
+		log.Fatalf("Database connection error: %v", err)
+	}
 
 	app := fiber.New()
 	api := app.Group("/api/v1")

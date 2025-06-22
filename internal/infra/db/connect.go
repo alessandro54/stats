@@ -11,7 +11,7 @@ import (
 
 var DB *gorm.DB
 
-func Connect() {
+func Connect() (*gorm.DB, error) {
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
 		log.Fatal("❌ DATABASE_URL is not set")
@@ -35,4 +35,5 @@ func Connect() {
 
 	DB = db
 	log.Println("✅ Connected to Postgres")
+	return db, nil
 }

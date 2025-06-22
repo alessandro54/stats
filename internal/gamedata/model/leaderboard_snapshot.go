@@ -2,11 +2,6 @@ package model
 
 import "time"
 
-const (
-	ModePvP = "pvp"
-	ModePvE = "pve"
-)
-
 type LeaderboardSnapshot struct {
 	ID        uint      `gorm:"primaryKey"`
 	Mode      string    `gorm:"not null;index"`
