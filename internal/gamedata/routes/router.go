@@ -5,11 +5,9 @@ import (
 	"github.com/gofiber/fiber/v3"
 )
 
-func RegisterGameDataRoutes(router fiber.Router) {
+func RegisterGameDataRoutes(router fiber.Router, c *container.AppContainer) {
 	pvp := router.Group("/game-data/pvp")
 
-	pvpSeasonHandler := container.InitPvpSeasonWire()
-
-	pvp.Get("/current-season", pvpSeasonHandler.GetPvpSeasonID)
-	pvp.Get("/leaderboard/:seasonId/:bracket", pvpSeasonHandler.GetPvpLeaderboard)
+	pvp.Get("/current-season", c.PvpSeasonHandler.GetPvpSeasonID)
+	pvp.Get("/leaderboard/:seasonId/:bracket", c.PvpSeasonHandler.GetPvpLeaderboard)
 }

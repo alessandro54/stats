@@ -30,3 +30,5 @@ Thumbs.db
 .env
 *.local
 /data/
+
+**/wire_gen.go

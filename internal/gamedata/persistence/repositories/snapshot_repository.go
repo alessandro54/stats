@@ -3,7 +3,6 @@ package repositories
 import (
 	"context"
 	"errors"
-	client "github.com/alessandro54/stats/infra/db"
 	"github.com/alessandro54/stats/internal/gamedata/domain/entity"
 	"github.com/alessandro54/stats/internal/gamedata/domain/port"
 	"gorm.io/gorm"
@@ -13,8 +12,8 @@ type snapshotRepositoryImpl struct {
 	db *gorm.DB
 }
 
-func NewLeaderboardSnapshotRepository() port.SnapshotRepository {
-	return &snapshotRepositoryImpl{db: client.DB}
+func NewSnapshotRepository(db *gorm.DB) port.SnapshotRepository {
+	return &snapshotRepositoryImpl{db: db}
 }
 
 func (r *snapshotRepositoryImpl) SaveSnapshot(ctx context.Context, snapshot *entity.LeaderboardSnapshot) error {

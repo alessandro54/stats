@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"github.com/alessandro54/stats/internal/gamedata/domain/port"
 	"github.com/gofiber/fiber/v3"
 )
@@ -29,8 +30,15 @@ func (h *PvpSeasonHandler) GetPvpLeaderboard(c fiber.Ctx) error {
 		})
 	}
 
+	var parsed map[string]interface{}
+	if err := json.Unmarshal(snapshot, &parsed); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to parse leaderboard data",
+		})
+	}
+
 	return c.JSON(fiber.Map{
-		"leaderboard": snapshot,
+		"leaderboard": parsed,
 	})
 }
 

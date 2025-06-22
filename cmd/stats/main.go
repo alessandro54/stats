@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/alessandro54/stats/cmd/cron"
 	"github.com/alessandro54/stats/infra/db"
+	"github.com/alessandro54/stats/internal/gamedata/container"
 	"github.com/alessandro54/stats/internal/system/handler"
 
 	"github.com/alessandro54/stats/internal/shared"
@@ -18,14 +19,16 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	db.Connect()
+	db.RunMigrations(db.DB)
+
 	app := fiber.New()
 
 	api := app.Group("/api/v1")
 
-	handler.RegisterRoutes(api)
+	appContainer := container.InitAppContainer()
 
-	db.Connect()
-	db.RunMigrations(db.DB)
+	handler.RegisterRoutes(api, appContainer)
 
 	cron.StartCronJobs()
 
