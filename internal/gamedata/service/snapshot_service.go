@@ -42,7 +42,7 @@ func (s *snapshotServiceImpl) Save(ctx context.Context, mode string, bracket str
 		Mode:      mode,
 		Bracket:   bracket,
 		Data:      data,
-		CreatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
 	}
 	return s.repo.SaveSnapshot(ctx, snapshot)
 }
@@ -67,7 +67,7 @@ func (s *snapshotServiceImpl) FetchFromBlizzardAndSave(ctx context.Context, pvpS
 		Bracket:   pvpBracket,
 		Data:      data,
 		Region:    region,
-		CreatedAt: time.Now(),
+		CreatedAt: time.Now().UTC(),
 	}
 
 	return s.repo.SaveSnapshot(ctx, snapshot)
