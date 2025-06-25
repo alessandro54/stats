@@ -51,6 +51,9 @@ db-migrate:
 db-rollback:
 	$(GO) run ./cmd/db rollback
 
+db-drop:
+	$(GO) run ./cmd/db drop
+
 ## 🧽 Tidy Go modules
 tidy:
 	$(GO) mod tidy

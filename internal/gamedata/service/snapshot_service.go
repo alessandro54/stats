@@ -4,9 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/alessandro54/stats/internal/gamedata/adapter/blizzard/gamedata"
-	"github.com/alessandro54/stats/internal/gamedata/model"
 	port2 "github.com/alessandro54/stats/internal/gamedata/port"
-	"time"
+	"github.com/alessandro54/stats/internal/playervsplayer/model"
 )
 
 type snapshotServiceImpl struct {
@@ -19,11 +18,11 @@ func NewSnapshotService(repo port2.SnapshotRepository) port2.SnapshotService {
 	}
 }
 
-func (s *snapshotServiceImpl) GetAll(ctx context.Context) ([]*model.LeaderboardSnapshot, error) {
+func (s *snapshotServiceImpl) GetAll(ctx context.Context) ([]*model.PvpLeaderboardSnapshot, error) {
 	return s.repo.GetAllSnapshots(ctx)
 }
 
-func (s *snapshotServiceImpl) GetLatestSeasonByBracket(ctx context.Context, mode string, bracket string) (*model.LeaderboardSnapshot, error) {
+func (s *snapshotServiceImpl) GetLatestSeasonByBracket(ctx context.Context, mode string, bracket string) (*model.PvpLeaderboardSnapshot, error) {
 	snapshot, err := s.repo.GetLatestSnapshot(ctx, mode, bracket)
 
 	if err != nil {
@@ -38,11 +37,8 @@ func (s *snapshotServiceImpl) GetLatestSeasonByBracket(ctx context.Context, mode
 }
 
 func (s *snapshotServiceImpl) Save(ctx context.Context, mode string, bracket string, data []byte) error {
-	snapshot := &model.LeaderboardSnapshot{
-		Mode:      mode,
-		Bracket:   bracket,
-		Data:      data,
-		CreatedAt: time.Now().UTC(),
+	snapshot := &model.PvpLeaderboardSnapshot{
+		Data: data,
 	}
 	return s.repo.SaveSnapshot(ctx, snapshot)
 }
@@ -62,12 +58,8 @@ func (s *snapshotServiceImpl) FetchFromBlizzardAndSave(ctx context.Context, pvpS
 		panic("failed to parse Blizzard JSON: " + err.Error())
 	}
 
-	snapshot := &model.LeaderboardSnapshot{
-		Mode:      "pvp",
-		Bracket:   pvpBracket,
-		Data:      data,
-		Region:    region,
-		CreatedAt: time.Now().UTC(),
+	snapshot := &model.PvpLeaderboardSnapshot{
+		Data: data,
 	}
 
 	return s.repo.SaveSnapshot(ctx, snapshot)

@@ -9,11 +9,12 @@ import (
 
 func migrationsList() []*gormigrate.Migration {
 	return []*gormigrate.Migration{
-		migrations.CreateLeaderboardSnapshotsMigration(),
 		migrations.CreateCharactersMigration(),
 		migrations.CreatePvpSeasonsMigration(),
 		migrations.CreateSpecializationsMigration(),
-		// Add more migrations here
+		migrations.CreatePvpLeaderboardsMigration(),
+		migrations.CreatePvpLeaderboardEntriesMigration(),
+		migrations.CreatePvpLeaderboardSnapshotsMigration(),
 	}
 }
 

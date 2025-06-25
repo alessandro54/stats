@@ -6,10 +6,10 @@ import (
 )
 
 type PvpSeason struct {
-	model.BaseModel
-
 	BlizzardID uint `gorm:"uniqueIndex" json:"blizzard_id"`
 	Name       string
 	StartTime  time.Time
 	EndTime    *time.Time
+
+	model.BaseModel
 }
