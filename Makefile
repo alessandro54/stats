@@ -17,7 +17,7 @@ WIRE=go run github.com/google/wire/cmd/wire
 # Docker Compose
 DC=docker compose
 
-PHONY: db-migrate wire-migrate
+PHONY: db-migrate db-migrate
 
 all: build
 
@@ -50,9 +50,6 @@ db-migrate:
 
 db-rollback:
 	$(GO) run ./cmd/db rollback
-
-db-drop:
-	$(GO) run ./cmd/db drop
 
 ## 🧽 Tidy Go modules
 tidy:

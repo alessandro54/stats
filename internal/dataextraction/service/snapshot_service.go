@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 	"encoding/json"
-	"github.com/alessandro54/stats/internal/gamedata/adapter/blizzard/gamedata"
-	port2 "github.com/alessandro54/stats/internal/gamedata/port"
+	"github.com/alessandro54/stats/internal/dataextraction/adapter/blizzard/gamedata"
+	port2 "github.com/alessandro54/stats/internal/dataextraction/port"
 	"github.com/alessandro54/stats/internal/playervsplayer/model"
 )
 

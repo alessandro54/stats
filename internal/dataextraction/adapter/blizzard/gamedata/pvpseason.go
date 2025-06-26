@@ -2,7 +2,7 @@ package pvpseason
 
 import (
 	"context"
-	"github.com/alessandro54/stats/internal/gamedata/adapter/blizzard"
+	"github.com/alessandro54/stats/internal/dataextraction/adapter/blizzard"
 )
 
 func FetchPvpSeasonIndex(ctx context.Context, opts map[string]string) ([]byte, error) {

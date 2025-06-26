@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	pvpseason "github.com/alessandro54/stats/internal/gamedata/adapter/blizzard/gamedata"
-	port2 "github.com/alessandro54/stats/internal/gamedata/port"
+	pvpseason "github.com/alessandro54/stats/internal/dataextraction/adapter/blizzard/gamedata"
+	port2 "github.com/alessandro54/stats/internal/dataextraction/port"
 )
 
 type pvpSeasonService struct {

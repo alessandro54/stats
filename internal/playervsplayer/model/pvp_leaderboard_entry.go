@@ -2,7 +2,7 @@ package model
 
 import (
 	common "github.com/alessandro54/stats/internal/common/model"
-	"github.com/alessandro54/stats/internal/dataaccess/model"
+	"github.com/alessandro54/stats/internal/gamedata/model"
 )
 
 type PvpLeaderboardEntry struct {

@@ -1,7 +1,7 @@
 package migrations
 
 import (
-	"github.com/alessandro54/stats/internal/dataaccess/model"
+	"github.com/alessandro54/stats/internal/gamedata/model"
 	"github.com/go-gormigrate/gormigrate/v2"
 	"gorm.io/gorm"
 )

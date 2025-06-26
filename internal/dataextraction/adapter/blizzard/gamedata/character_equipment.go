@@ -3,7 +3,7 @@ package pvpseason
 import (
 	"context"
 	"fmt"
-	"github.com/alessandro54/stats/internal/gamedata/adapter/blizzard"
+	"github.com/alessandro54/stats/internal/dataextraction/adapter/blizzard"
 )
 
 func FetchCharacterEquipment(ctx context.Context, realm string, name string, opts map[string]string) ([]byte, error) {

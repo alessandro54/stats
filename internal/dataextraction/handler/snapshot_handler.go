@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"github.com/alessandro54/stats/internal/gamedata/port"
+	"github.com/alessandro54/stats/internal/dataextraction/port"
 	"github.com/gofiber/fiber/v3"
 )
 

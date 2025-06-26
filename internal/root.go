@@ -3,8 +3,8 @@ package internal
 import (
 	"github.com/alessandro54/stats/cmd/cron"
 	"github.com/alessandro54/stats/internal/common"
-	"github.com/alessandro54/stats/internal/gamedata/container"
-	"github.com/alessandro54/stats/internal/gamedata/routes"
+	"github.com/alessandro54/stats/internal/dataextraction/container"
+	"github.com/alessandro54/stats/internal/dataextraction/routes"
 	"github.com/alessandro54/stats/internal/infra/db"
 	"github.com/gofiber/fiber/v3"
 	"github.com/joho/godotenv"

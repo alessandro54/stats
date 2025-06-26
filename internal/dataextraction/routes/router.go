@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/alessandro54/stats/internal/gamedata/container"
+	"github.com/alessandro54/stats/internal/dataextraction/container"
 	"github.com/gofiber/fiber/v3"
 )
 
