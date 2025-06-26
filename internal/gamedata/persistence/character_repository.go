@@ -52,7 +52,7 @@ func (c characterRepositoryImpl) FindOneByID(ctx context.Context, characterID ui
 	return &character, nil
 }
 
-func (c characterRepositoryImpl) FindOneByBlizzardID(ctx context.Context, blizzardID string) (*model.Character, error) {
+func (c characterRepositoryImpl) FindOneByBlizzardID(ctx context.Context, blizzardID uint) (*model.Character, error) {
 	var character model.Character
 
 	err := c.db.WithContext(ctx).Where("blizzardID = ?", blizzardID).First(&character).Error

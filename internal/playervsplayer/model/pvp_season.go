@@ -1,15 +1,15 @@
 package model
 
 import (
-	"github.com/alessandro54/stats/internal/common/model"
+	common "github.com/alessandro54/stats/internal/common/model"
 	"time"
 )
 
 type PvpSeason struct {
-	BlizzardID string `gorm:"uniqueIndex" json:"blizzard_id"`
+	BlizzardID uint `gorm:"uniqueIndex" json:"blizzard_id"`
 	Name       string
-	StartTime  time.Time
-	EndTime    *time.Time
+	StartTime  time.Time  `gorm:"not null"`
+	EndTime    *time.Time `gorm:"default:null"`
 
-	model.BaseModel
+	common.BaseModel
 }
