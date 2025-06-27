@@ -2,12 +2,10 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	pvpseason "github.com/alessandro54/stats/internal/dataextraction/adapter/blizzard/gamedata"
 	"github.com/alessandro54/stats/internal/playervsplayer/model"
 	"github.com/alessandro54/stats/internal/playervsplayer/port"
-	"time"
 )
 
 type PvpSeasonDTO struct {
@@ -26,29 +24,10 @@ func (p *pvpSeasonServiceImpl) FetchOrInsert(ctx context.Context, blizzardID uin
 		return season, err
 	}
 
-	data, err := pvpseason.FetchPvpSeason(ctx, blizzardID, "us")
+	newSeason, err := pvpseason.FetchPvpSeason(ctx, blizzardID, "us")
+
 	if err != nil {
-		return nil, fmt.Errorf("blizzard fetch failed: %w", err)
-	}
-
-	var dto PvpSeasonDTO
-	if err := json.Unmarshal(data, &dto); err != nil {
-		return nil, fmt.Errorf("unmarshal failed: %w", err)
-	}
-
-	start := time.UnixMilli(dto.SeasonStartUnixMs).UTC()
-
-	var end *time.Time
-	if dto.SeasonEndUnixMs > 0 {
-		t := time.UnixMilli(dto.SeasonEndUnixMs).UTC()
-		end = &t
-	}
-
-	newSeason := &model.PvpSeason{
-		BlizzardID: dto.ID,
-		Name:       dto.SeasonName,
-		StartTime:  start,
-		EndTime:    end,
+		fmt.Println(err.Error())
 	}
 
 	if err := p.repo.Insert(ctx, newSeason); err != nil {

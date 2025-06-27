@@ -2,17 +2,16 @@ package service
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	pvpseason "github.com/alessandro54/stats/internal/dataextraction/adapter/blizzard/gamedata"
-	port2 "github.com/alessandro54/stats/internal/dataextraction/port"
+	"github.com/alessandro54/stats/internal/dataextraction/port"
 )
 
 type pvpSeasonService struct {
-	snapshotService port2.SnapshotService
+	snapshotService port.SnapshotService
 }
 
-func NewPvpService(snapshotService port2.SnapshotService) port2.PvpSeasonService {
+func NewPvpService(snapshotService port.SnapshotService) port.PvpSeasonService {
 	return &pvpSeasonService{
 		snapshotService: snapshotService,
 	}
@@ -30,21 +29,11 @@ func (p pvpSeasonService) GetLatestPvpLeaderboard(ctx context.Context, bracket s
 	return data.Data, nil
 }
 
-func (p pvpSeasonService) GetCurrentSeasonID(ctx context.Context) (int, error) {
-	data, err := pvpseason.FetchPvpSeasonIndex(ctx, map[string]string{})
+func (p pvpSeasonService) GetCurrentSeasonID(ctx context.Context, region string) (int, error) {
+	data, err := pvpseason.FetchPvpSeasonIndex(ctx, region)
 	if err != nil {
 		return 0, err
 	}
 
-	var result struct {
-		CurrentSeason struct {
-			ID int `json:"id"`
-		} `json:"current_season"`
-	}
-
-	if err := json.Unmarshal(data, &result); err != nil {
-		return 0, fmt.Errorf("unmarshal error: %w", err)
-	}
-
-	return result.CurrentSeason.ID, nil
+	return data.CurrentSeason.ID, nil
 }
