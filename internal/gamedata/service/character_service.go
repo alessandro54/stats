@@ -23,7 +23,7 @@ func (c *characterServiceImpl) GetOrFetch(ctx context.Context, character *model.
 	}
 
 	if err := c.repo.Insert(ctx, character); err != nil {
-		log.Printf("❌ Failed to insert character %s: %v", character.Name, err)
+		log.Printf("❌ Insert failed: %v", err)
 
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
 			return c.repo.FindOneByBlizzardID(ctx, character.BlizzardID, character.Region)
@@ -31,6 +31,7 @@ func (c *characterServiceImpl) GetOrFetch(ctx context.Context, character *model.
 		return nil, err
 	}
 
+	log.Printf("✅ Inserted character: %s with ID=%d", character.Name, character.ID)
 	return character, nil
 }
 

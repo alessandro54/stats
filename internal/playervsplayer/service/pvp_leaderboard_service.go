@@ -13,11 +13,14 @@ import (
 
 type pvpLeaderboardServiceImpl struct {
 	repo         port.PvpLeaderboardRepository
+	seasonSvc    port.PvpSeasonService
 	characterSvc characterPort.CharacterService
 }
 
-func (p *pvpLeaderboardServiceImpl) GetOrFetch(ctx context.Context, seasonID uint, bracket string, region string) (*model.PvpLeaderboard, error) {
-	leaderboard, err := p.repo.FindBySeasonAndBracket(ctx, seasonID, bracket, region)
+func (p *pvpLeaderboardServiceImpl) GetOrFetch(ctx context.Context, seasonBlizzardID uint, bracket string, region string) (*model.PvpLeaderboard, error) {
+	season, err := p.seasonSvc.FetchOrInsert(ctx, seasonBlizzardID)
+	leaderboard, err := p.repo.FindBySeasonAndBracket(ctx, season.ID, bracket, region)
+
 	if err != nil {
 		return nil, err
 	}
@@ -25,7 +28,7 @@ func (p *pvpLeaderboardServiceImpl) GetOrFetch(ctx context.Context, seasonID uin
 		return leaderboard, nil
 	}
 
-	dto, err := pvpseason.FetchLeaderboard(ctx, seasonID, bracket, map[string]string{
+	dto, err := pvpseason.FetchLeaderboard(ctx, season.BlizzardID, bracket, map[string]string{
 		"region": region,
 		"locale": "en_US",
 	})
@@ -34,7 +37,8 @@ func (p *pvpLeaderboardServiceImpl) GetOrFetch(ctx context.Context, seasonID uin
 		return nil, fmt.Errorf("blizzard fetch failed: %w", err)
 	}
 
-	newLeaderboard, err := p.buildLeaderboardFromDTO(ctx, dto, region)
+	newLeaderboard, err := p.buildLeaderboardFromDTO(ctx, season.ID, dto, region)
+
 	if err != nil {
 		return nil, err
 	}
@@ -48,12 +52,13 @@ func (p *pvpLeaderboardServiceImpl) GetOrFetch(ctx context.Context, seasonID uin
 
 func (p *pvpLeaderboardServiceImpl) buildLeaderboardFromDTO(
 	ctx context.Context,
+	seasonID uint,
 	dto *response.PvpLeaderboardResponse,
 	region string,
 ) (*model.PvpLeaderboard, error) {
 
 	leaderboard := &model.PvpLeaderboard{
-		PvpSeasonID: dto.Season.ID,
+		PvpSeasonID: seasonID,
 		Bracket:     dto.Name,
 		Region:      region,
 	}
@@ -70,7 +75,7 @@ func (p *pvpLeaderboardServiceImpl) buildLeaderboardFromDTO(
 
 		storedChar, err := p.characterSvc.GetOrFetch(ctx, char)
 		if err != nil {
-			continue
+			return nil, fmt.Errorf("failed to get or create character %s: %w", char.Name, err)
 		}
 
 		leaderboard.Entries = append(leaderboard.Entries, model.PvpLeaderboardEntry{
@@ -88,9 +93,14 @@ func (p *pvpLeaderboardServiceImpl) buildLeaderboardFromDTO(
 	return leaderboard, nil
 }
 
-func NewPvpLeaderboardService(repo port.PvpLeaderboardRepository, svc characterPort.CharacterService) port.PvpLeaderboardService {
+func NewPvpLeaderboardService(
+	repo port.PvpLeaderboardRepository,
+	charSvc characterPort.CharacterService,
+	seasonSvc port.PvpSeasonService,
+) port.PvpLeaderboardService {
 	return &pvpLeaderboardServiceImpl{
 		repo:         repo,
-		characterSvc: svc,
+		characterSvc: charSvc,
+		seasonSvc:    seasonSvc,
 	}
 }

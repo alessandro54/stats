@@ -6,5 +6,5 @@ import (
 )
 
 type PvpLeaderboardService interface {
-	GetOrFetch(ctx context.Context, seasonID uint, bracket string, region string) (*model.PvpLeaderboard, error)
+	GetOrFetch(ctx context.Context, seasonBlizzardID uint, bracket string, region string) (*model.PvpLeaderboard, error)
 }

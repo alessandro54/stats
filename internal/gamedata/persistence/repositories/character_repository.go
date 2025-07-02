@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"context"
+	"errors"
 	"github.com/alessandro54/stats/internal/gamedata/model"
 	"github.com/alessandro54/stats/internal/gamedata/port"
 	"gorm.io/gorm"
@@ -32,8 +33,8 @@ func (c *characterRepositoryImpl) FindOneByBlizzardID(ctx context.Context, blizz
 
 	err := c.db.WithContext(ctx).Where("blizzard_id = ? AND region = ?", blizzardID, region).First(&character).Error
 
-	if err != nil {
-		return nil, err
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil // 👈 esto es lo correcto
 	}
 
 	return &character, nil
