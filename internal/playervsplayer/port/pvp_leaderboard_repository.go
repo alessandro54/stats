@@ -6,5 +6,6 @@ import (
 )
 
 type PvpLeaderboardRepository interface {
-	FindOrInsert(ctx context.Context, leaderboard *model.PvpLeaderboard) (*model.PvpLeaderboard, error)
+	Insert(ctx context.Context, leaderboard *model.PvpLeaderboard) error
+	FindBySeasonAndBracket(ctx context.Context, seasonID uint, bracket string, region string) (*model.PvpLeaderboard, error)
 }

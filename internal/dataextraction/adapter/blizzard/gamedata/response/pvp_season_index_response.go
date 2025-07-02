@@ -1,14 +1,14 @@
 package response
 
 type PvpSeasonIndexResponse struct {
-	Seasons       []PvpSeasonIndexSeason      `json:"seasons"`
-	CurrentSeason PvpSeasonIndexCurrentSeason `json:"current_season"`
+	Seasons       []pvpSeasonIndexSeason      `json:"seasons"`
+	CurrentSeason pvpSeasonIndexCurrentSeason `json:"current_season"`
 }
 
-type PvpSeasonIndexSeason struct {
+type pvpSeasonIndexSeason struct {
 	ID int `json:"id"`
 }
 
-type PvpSeasonIndexCurrentSeason struct {
+type pvpSeasonIndexCurrentSeason struct {
 	ID int `json:"id"`
 }

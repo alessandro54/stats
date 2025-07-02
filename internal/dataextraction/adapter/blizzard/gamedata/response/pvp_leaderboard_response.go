@@ -13,21 +13,21 @@ type Season struct {
 type PvpEntry struct {
 	Character             Character             `json:"character"`
 	Faction               Faction               `json:"faction"`
-	Rank                  int                   `json:"rank"`
-	Rating                int                   `json:"rating"`
+	Rank                  uint                  `json:"rank"`
+	Rating                uint                  `json:"rating"`
 	SeasonMatchStatistics SeasonMatchStatistics `json:"season_match_statistics"`
 	Tier                  Tier                  `json:"tier"`
 }
 
 type Character struct {
 	Name  string `json:"name"`
-	ID    int    `json:"id"`
+	ID    uint   `json:"id"`
 	Realm Realm  `json:"realm"`
 }
 
 type Realm struct {
 	Key  Link   `json:"key"`
-	ID   int    `json:"id"`
+	ID   uint   `json:"id"`
 	Slug string `json:"slug"`
 }
 
@@ -40,12 +40,12 @@ type Faction struct {
 }
 
 type SeasonMatchStatistics struct {
-	Played int `json:"played"`
-	Won    int `json:"won"`
-	Lost   int `json:"lost"`
+	Played uint `json:"played"`
+	Won    uint `json:"won"`
+	Lost   uint `json:"lost"`
 }
 
 type Tier struct {
 	Key Link `json:"key"`
-	ID  int  `json:"id"`
+	ID  uint `json:"id"`
 }

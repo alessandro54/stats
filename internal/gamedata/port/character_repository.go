@@ -7,10 +7,8 @@ import (
 
 type CharacterRepository interface {
 	FindOneByID(ctx context.Context, characterID uint) (*model.Character, error)
-	FindOneByBlizzardID(ctx context.Context, blizzardID uint) (*model.Character, error)
-	FindOrInsert(ctx context.Context, character *model.Character) (*model.Character, error)
+	FindOneByBlizzardID(ctx context.Context, blizzardID uint, region string) (*model.Character, error)
 
-	Save(ctx context.Context, character *model.Character) error
-
+	Insert(ctx context.Context, character *model.Character) error
 	Delete(ctx context.Context, characterID uint) error
 }

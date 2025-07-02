@@ -80,16 +80,36 @@ func FetchLeaderboardIndex(ctx context.Context, seasonId string, opts map[string
 			"namespace": "dynamic-" + client.Region,
 			"locale":    client.Locale,
 		})
+
 }
 
-func FetchLeaderboard(ctx context.Context, seasonId string, bracket string, opts map[string]string) ([]byte, error) {
+func FetchLeaderboard(ctx context.Context, seasonId uint, bracket string, opts map[string]string) (*response.PvpLeaderboardResponse, error) {
+	if opts == nil {
+		opts = map[string]string{
+			"region": "us",
+			"locale": "en_US",
+		}
+	}
+
 	client, _ := blizzard.GetClient(ctx, opts["region"], opts["locale"])
-	return client.Get(
+
+	raw, err := client.Get(
 		ctx,
-		"/data/wow/pvp-season/"+seasonId+"/pvp-leaderboard/"+bracket,
+		fmt.Sprintf("/data/wow/pvp-season/%d/pvp-leaderboard/%s", seasonId, bracket),
 		map[string]string{
 			"namespace": "dynamic-" + client.Region,
 			"locale":    client.Locale,
 		},
 	)
+
+	if err != nil {
+		return nil, fmt.Errorf("blizzard fetch failed: %w", err)
+	}
+
+	var dto response.PvpLeaderboardResponse
+	if err := json.Unmarshal(raw, &dto); err != nil {
+		return nil, fmt.Errorf("unmarshal failed: %w", err)
+	}
+
+	return &dto, nil
 }
